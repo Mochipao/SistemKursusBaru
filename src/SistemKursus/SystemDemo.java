@@ -2,14 +2,14 @@ package SistemKursus;
 
 import java.util.*;
 
-public class CourseSystemDemo {
+public class SystemDemo {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        List<Course> allCourses = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);;
 
         Map<String, User> userMap = UserFileManager.loadUsers(); 
 
         Quiz quiz1 = null;
+        List<Course> allCourses = CourseFileManager.loadAllCourses("courses");
         InstructorHandler instructorHandler = new InstructorHandler(scanner, allCourses);
         StudentHandler studentHandler = new StudentHandler(scanner, allCourses); 
 
@@ -56,7 +56,7 @@ public class CourseSystemDemo {
                     if (roleChoice.equals("1")) {
                         newUser = new Student(userMap.size() + 1, name, email, password, false);
                     } else if (roleChoice.equals("2")) {
-                        newUser = new Instructor(userMap.size() + 1, name, email, password, false);
+                        newUser = new Instructor(userMap.size() + 1, name, email, password, false );
                     } else {
                         System.out.println("Peran tidak valid, silakan pilih lagi");
                         continue;

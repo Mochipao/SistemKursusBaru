@@ -31,6 +31,7 @@ public class StudentHandler implements RoleHandler {
             System.out.println("\n=== Menu Siswa ===");
             System.out.println("1. Pilih Course");
             System.out.println("2. Mulai Kuis");
+            System.out.println("3. Belajar"); 
             System.out.println("0. Kembali ke Menu Utama");
 
             System.out.print("Pilih opsi: ");
@@ -46,6 +47,9 @@ public class StudentHandler implements RoleHandler {
                     case 2:
                         mulaiKuis();
                         break;
+                    case 3:
+                        belajarLesson();
+                        break;
                     case 0:
                         kembali = true;
                         break;
@@ -58,8 +62,6 @@ public class StudentHandler implements RoleHandler {
             }
         }
     }
-
-
 
     private void pilihCourse() {
         if (allCourses.isEmpty()) {
@@ -144,44 +146,50 @@ public class StudentHandler implements RoleHandler {
 
     private void belajarLesson() {
         if (allCourses.isEmpty()) {
-            System.out.println(" Belum ada course yang tersedia");
+            System.out.println("Belum ada course yang tersedia.");
             return;
         }
 
-        System.out.println("\nDaftar Course:");
+        System.out.println("\n=== Daftar Course ===");
         for (int i = 0; i < allCourses.size(); i++) {
-            Course c = allCourses.get(i);
-            System.out.println((i + 1) + ". " + c.getName() + " - " + c.getCategory());
+            Course course = allCourses.get(i);
+            System.out.println((i + 1) + ". " + course.getName() + " - " + course.getCategory());
         }
 
         System.out.print("Pilih nomor course untuk belajar: ");
-        int pilih = scanner.nextInt();
-        scanner.nextLine();
+        int pilih;
+        try {
+            pilih = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Input tidak valid. Masukkan angka.");
+            return;
+        }
 
         if (pilih < 1 || pilih > allCourses.size()) {
-            System.out.println(" Pilihan tidak valid.");
+            System.out.println("Pilihan tidak valid.");
             return;
         }
 
-        Course selected = allCourses.get(pilih - 1);
-        List<Lesson> lessons = selected.getLessons();
+        Course selectedCourse = allCourses.get(pilih - 1);
+        List<Lesson> lessons = selectedCourse.getLessons();
 
         if (lessons.isEmpty()) {
-            System.out.println(" Belum ada pelajaran dalam course ini.");
+            System.out.println("Belum ada pelajaran dalam course ini.");
             return;
         }
 
-        System.out.println("\n=== Belajar: " + selected.getName() + " ===");
+        System.out.println("\n=== Belajar: " + selectedCourse.getName() + " ===");
+
         for (int i = 0; i < lessons.size(); i++) {
             Lesson lesson = lessons.get(i);
-            System.out.println("Pelajaran " + (i + 1) + ": " + lesson.getTitle());
-            System.out.println("Konten: " + lesson.getContents());
-            System.out.println("-----------------------------");
+            lesson.display();
 
             if (i < lessons.size() - 1) {
                 System.out.print("Lanjut ke pelajaran berikutnya? (y/n): ");
                 String lanjut = scanner.nextLine();
-                if (!lanjut.equalsIgnoreCase("y")) break;
+                if (!lanjut.equalsIgnoreCase("y")) {
+                    break;
+                }
             }
         }
     }

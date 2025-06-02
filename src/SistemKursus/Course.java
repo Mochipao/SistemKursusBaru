@@ -1,9 +1,11 @@
 package SistemKursus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Course {
+public class Course implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int courseId;
     private String title;
     private String description;

@@ -1,8 +1,10 @@
 package SistemKursus;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Question {
+public class Question implements Serializable{
+     private static final long serialVersionUID = 1L;
     private String questionText;
     private List<String> options;
     private int correctAnswerIndex;

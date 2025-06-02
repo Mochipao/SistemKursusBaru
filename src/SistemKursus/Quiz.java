@@ -1,9 +1,11 @@
 package SistemKursus;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Scanner;
 
-public class Quiz {
+public class Quiz implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int quizId;
     private List<Question> questions;
 
@@ -54,5 +56,9 @@ public class Quiz {
 
     public int getQuizId() {
         return quizId;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
     }
 }
