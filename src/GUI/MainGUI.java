@@ -1,6 +1,7 @@
 package GUI;
 
 import SistemKursus.Course;
+import SistemKursus.Instructor;
 import SistemKursus.Student;
 import java.awt.*;
 import javax.swing.*;
@@ -12,12 +13,13 @@ public class MainGUI extends JFrame {
     private StudentDashboardPanel studentDashboardPanel;
     private InstructorDashboardPanel instructorDashboardPanel;
     private QuizPanel quizPanel;
+    private Instructor currentInstructor;
 
     public MainGUI() {
         setTitle("Course9 - Sistem Kursus Online");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // center window
+        setLocationRelativeTo(null); 
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -47,6 +49,7 @@ public class MainGUI extends JFrame {
     }
 
     public void showInstructorDashboard() {
+        instructorDashboardPanel.populateCourses();
         cardLayout.show(mainPanel, "InstructorDashboard");
     }
 
@@ -74,8 +77,6 @@ public class MainGUI extends JFrame {
         showPanel(panelName); 
     }
 
-
-
     public void showQuizPanel(Course course) {
         if (quizPanel != null) {
             mainPanel.remove(quizPanel);
@@ -88,6 +89,35 @@ public class MainGUI extends JFrame {
         mainPanel.repaint();
     }
 
+    public void showAddQuizPanel(Course selectedCourse) {
+        AddQuizPanel addQuizPanel = new AddQuizPanel(this, selectedCourse);
+        mainPanel.add(addQuizPanel, "AddQuizPanel");
+        cardLayout.show(mainPanel, "AddQuizPanel");
+    }
+
+    public void showAddLessonPanel(Course selectedCourse) {
+        AddLessonPanel addLessonPanel = new AddLessonPanel(this, selectedCourse);
+        mainPanel.add(addLessonPanel, "AddLessonPanel");
+        cardLayout.show(mainPanel, "AddLessonPanel");
+    }
+
+    public void setLoggedInInstructor(Instructor instructor) {
+        this.currentInstructor = instructor;
+    }
+
+    public Instructor getLoggedInInstructor() {
+        return this.currentInstructor;
+    }
+
+    public InstructorDashboardPanel getInstructorDashboardPanel() {
+        return instructorDashboardPanel; 
+    }
+
+    public void logout() {
+        this.currentStudent = null;
+        this.currentInstructor = null;
+        showPanel("Opening");
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainGUI());

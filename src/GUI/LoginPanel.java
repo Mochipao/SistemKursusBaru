@@ -48,6 +48,8 @@ public class LoginPanel extends JPanel {
                     mainGUI.showPanel("StudentDashboard"); 
                 } else if (user.getRole().equals("Instructor")) {
                     JOptionPane.showMessageDialog(this, "Login sebagai Instructor berhasil!");
+                    mainGUI.setLoggedInInstructor((Instructor) user);
+                    mainGUI.getInstructorDashboardPanel().populateCourses();
                     mainGUI.showPanel("InstructorDashboard"); 
                 }
             } else {

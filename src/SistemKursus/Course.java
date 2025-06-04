@@ -14,15 +14,17 @@ public class Course implements Serializable {
     private List<Quiz> quizzes;
     private double price;
     private String instructorName;
+    private String instructorEmail; 
     private static final int JUMLAH_MAX_KONTEN = 10;
 
-    public Course(int courseId, String title, String desc, String category, double price, String instructorName) {
+    public Course(int courseId, String title, String desc, String category, double price, String instructorName, String instructorEmail) {
         this.courseId = courseId;
         this.title = title;
         this.description = desc;
         this.category = category;
         this.price = price;
         this.instructorName = instructorName;
+        this.instructorEmail = instructorEmail;
         this.lessons = new ArrayList<>();
         this.quizzes = new ArrayList<>();
     }
@@ -35,6 +37,10 @@ public class Course implements Serializable {
         return instructorName;
     }
 
+    public String getInstructorEmail() {  
+        return instructorEmail;
+    }
+
     public String getName() {
         return this.title;
     }
@@ -43,7 +49,7 @@ public class Course implements Serializable {
         try {
             if (lessons.size() < JUMLAH_MAX_KONTEN) {
                 lessons.add(lesson);
-                System.out.println(" Pelajaran ditambahkan ke kursus: " + title);
+                System.out.println("Pelajaran ditambahkan ke kursus: " + title);
             } else {
                 throw new IllegalStateException("Kursus sudah mencapai batas maksimal pelajaran.");
             }
@@ -69,7 +75,7 @@ public class Course implements Serializable {
         return category;
     }
 
-    public int getCourseId(){
+    public int getCourseId() {
         return courseId;
     }
 

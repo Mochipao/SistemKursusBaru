@@ -13,9 +13,22 @@ public class StudentDashboardPanel extends JPanel {
         this.mainGUI = mainGUI;
         setLayout(new BorderLayout());
 
+        JPanel topContainer = new JPanel(new BorderLayout());
+
+        // Panel logout di kanan
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> {
+            mainGUI.setLoggedInInstructor(null);
+            mainGUI.showPanel("Opening");
+        });
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        topBar.add(logoutButton);
+
         JLabel title = new JLabel("📚 Course Marketplace", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 24));
-        add(title, BorderLayout.NORTH);
+        topContainer.add(title, BorderLayout.CENTER);
+        topContainer.add(topBar, BorderLayout.EAST);
+        add(topContainer, BorderLayout.NORTH);
 
         // Panel untuk daftar kursus
         courseListPanel = new JPanel();

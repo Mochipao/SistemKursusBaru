@@ -70,15 +70,16 @@ public class InstructorHandler implements RoleHandler {
         double coursePrice = Double.parseDouble(scanner.nextLine());
         System.out.print("Masukkan nama instruktur: ");
         String instructorName = scanner.nextLine();
+        System.out.print("Masukkan email instruktur: ");
+        String instructorEmail = scanner.nextLine();
 
         int courseId = 1000 + allCourses.size();
-        Course newCourse = new Course(courseId, courseName, courseDesc, courseCategory, coursePrice, instructorName);
+        Course newCourse = new Course(courseId, courseName, courseDesc, courseCategory, coursePrice, instructorName, instructorEmail); 
         allCourses.add(newCourse);
         System.out.println("Course berhasil ditambahkan: " + newCourse.getName());
 
         CourseFileManager.simpanCourseKeFile(newCourse, "courses/" + newCourse.getName() + ".dat");
     }
-
 
     private void tambahSoalKuis() {
         if (allCourses.isEmpty()) {
@@ -232,144 +233,143 @@ public class InstructorHandler implements RoleHandler {
     }
 
     private void lihatIsiCourse() {
-    if (allCourses.isEmpty()) {
-        System.out.println("Belum ada course yang tersedia");
-        return;
-    }
-
-    System.out.println("\n=== Daftar Course Anda ===");
-    for (int i = 0; i < allCourses.size(); i++) {
-        Course c = allCourses.get(i);
-        System.out.println((i + 1) + ". " + c.getName() + " - " + c.getCategory());
-    }
-
-    System.out.print("Pilih nomor course untuk melihat detailnya: ");
-    int pilihan;
-    try {
-        pilihan = Integer.parseInt(scanner.nextLine());
-    } catch (NumberFormatException e) {
-        System.out.println("Input harus berupa angka");
-        return;
-    }
-
-    if (pilihan < 1 || pilihan > allCourses.size()) {
-        System.out.println("Pilihan tidak valid");
-        return;
-    }
-
-    Course selected = allCourses.get(pilihan - 1);
-
-    List<Lesson> lessons = selected.getLessons();
-    System.out.println("\n=== Pelajaran dalam " + selected.getName() + " ===");
-    if (lessons.isEmpty()) {
-        System.out.println("Belum ada pelajaran");
-    } else {
-        for (Lesson lesson : lessons) {
-            System.out.println("- " + lesson.getTitle());
+        if (allCourses.isEmpty()) {
+            System.out.println("Belum ada course yang tersedia");
+            return;
         }
-    }
 
-    List<Quiz> quizzes = selected.getQuizzes();
-    System.out.println("\n=== Kuis dalam " + selected.getName() + " ===");
-    if (quizzes.isEmpty()) {
-        System.out.println("Belum ada kuis");
-    } else {
-        for (Quiz quiz : quizzes) {
-            System.out.println("- Kuis ID: " + quiz.getQuizId() + ", Jumlah Soal: " + quiz.getQuestions().size());
+        System.out.println("\n=== Daftar Course Anda ===");
+        for (int i = 0; i < allCourses.size(); i++) {
+            Course c = allCourses.get(i);
+            System.out.println((i + 1) + ". " + c.getName() + " - " + c.getCategory());
         }
-    }
-}
 
-private void hapusIsiCourse() {
-    if (allCourses.isEmpty()) {
-        System.out.println("Belum ada course");
-        return;
-    }
+        System.out.print("Pilih nomor course untuk melihat detailnya: ");
+        int pilihan;
+        try {
+            pilihan = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Input harus berupa angka");
+            return;
+        }
 
-    System.out.println("\n=== Hapus Isi Course ===");
-    for (int i = 0; i < allCourses.size(); i++) {
-        System.out.println((i + 1) + ". " + allCourses.get(i).getName());
-    }
-
-    System.out.print("Pilih nomor course: ");
-    int courseIndex;
-    try {
-        courseIndex = Integer.parseInt(scanner.nextLine()) - 1;
-        if (courseIndex < 0 || courseIndex >= allCourses.size()) {
+        if (pilihan < 1 || pilihan > allCourses.size()) {
             System.out.println("Pilihan tidak valid");
             return;
         }
-    } catch (NumberFormatException e) {
-        System.out.println("Input harus berupa angka");
-        return;
+
+        Course selected = allCourses.get(pilihan - 1);
+
+        List<Lesson> lessons = selected.getLessons();
+        System.out.println("\n=== Pelajaran dalam " + selected.getName() + " ===");
+        if (lessons.isEmpty()) {
+            System.out.println("Belum ada pelajaran");
+        } else {
+            for (Lesson lesson : lessons) {
+                System.out.println("- " + lesson.getTitle());
+            }
+        }
+
+        List<Quiz> quizzes = selected.getQuizzes();
+        System.out.println("\n=== Kuis dalam " + selected.getName() + " ===");
+        if (quizzes.isEmpty()) {
+            System.out.println("Belum ada kuis");
+        } else {
+            for (Quiz quiz : quizzes) {
+                System.out.println("- Kuis ID: " + quiz.getQuizId() + ", Jumlah Soal: " + quiz.getQuestions().size());
+            }
+        }
     }
 
-    Course selectedCourse = allCourses.get(courseIndex);
-
-    System.out.println("\n1. Hapus Pelajaran");
-    System.out.println("2. Hapus Kuis");
-    System.out.print("Pilih isi yang ingin dihapus: ");
-    String isi = scanner.nextLine();
-
-    switch (isi) {
-        case "1":
-            List<Lesson> lessons = selectedCourse.getLessons();
-            if (lessons.isEmpty()) {
-                System.out.println("Tidak ada pelajaran untuk dihapus.");
-                return;
-            }
-
-            for (int i = 0; i < lessons.size(); i++) {
-                System.out.println((i + 1) + ". " + lessons.get(i).getTitle());
-            }
-
-            System.out.print("Pilih nomor pelajaran untuk dihapus: ");
-            try {
-                int delIndex = Integer.parseInt(scanner.nextLine()) - 1;
-                if (delIndex >= 0 && delIndex < lessons.size()) {
-                    Lesson removed = lessons.remove(delIndex);
-                    System.out.println("Pelajaran '" + removed.getTitle() + "' berhasil dihapus.");
-                } else {
-                    System.out.println("Pilihan tidak valid.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Input harus berupa angka.");
-            }
-            break;
-
-        case "2":
-            List<Quiz> quizzes = selectedCourse.getQuizzes();
-            if (quizzes.isEmpty()) {
-                System.out.println("Tidak ada kuis untuk dihapus.");
-                return;
-            }
-
-            for (int i = 0; i < quizzes.size(); i++) {
-                System.out.println((i + 1) + ". Kuis ID: " + quizzes.get(i).getQuizId());
-            }
-
-            System.out.print("Pilih nomor kuis untuk dihapus: ");
-            try {
-                int delIndex = Integer.parseInt(scanner.nextLine()) - 1;
-                if (delIndex >= 0 && delIndex < quizzes.size()) {
-                    Quiz removed = quizzes.remove(delIndex);
-                    System.out.println("Kuis ID " + removed.getQuizId() + " berhasil dihapus.");
-                } else {
-                    System.out.println("Pilihan tidak valid.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Input harus berupa angka.");
-            }
-            break;
-
-        default:
-            System.out.println("Pilihan tidak valid.");
+    private void hapusIsiCourse() {
+        if (allCourses.isEmpty()) {
+            System.out.println("Belum ada course");
             return;
+        }
+
+        System.out.println("\n=== Hapus Isi Course ===");
+        for (int i = 0; i < allCourses.size(); i++) {
+            System.out.println((i + 1) + ". " + allCourses.get(i).getName());
+        }
+
+        System.out.print("Pilih nomor course: ");
+        int courseIndex;
+        try {
+            courseIndex = Integer.parseInt(scanner.nextLine()) - 1;
+            if (courseIndex < 0 || courseIndex >= allCourses.size()) {
+                System.out.println("Pilihan tidak valid");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Input harus berupa angka");
+            return;
+        }
+
+        Course selectedCourse = allCourses.get(courseIndex);
+
+        System.out.println("\n1. Hapus Pelajaran");
+        System.out.println("2. Hapus Kuis");
+        System.out.print("Pilih isi yang ingin dihapus: ");
+        String isi = scanner.nextLine();
+
+        switch (isi) {
+            case "1":
+                List<Lesson> lessons = selectedCourse.getLessons();
+                if (lessons.isEmpty()) {
+                    System.out.println("Tidak ada pelajaran untuk dihapus.");
+                    return;
+                }
+
+                for (int i = 0; i < lessons.size(); i++) {
+                    System.out.println((i + 1) + ". " + lessons.get(i).getTitle());
+                }
+
+                System.out.print("Pilih nomor pelajaran untuk dihapus: ");
+                try {
+                    int delIndex = Integer.parseInt(scanner.nextLine()) - 1;
+                    if (delIndex >= 0 && delIndex < lessons.size()) {
+                        Lesson removed = lessons.remove(delIndex);
+                        System.out.println("Pelajaran '" + removed.getTitle() + "' berhasil dihapus.");
+                    } else {
+                        System.out.println("Pilihan tidak valid.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input harus berupa angka.");
+                }
+                break;
+
+            case "2":
+                List<Quiz> quizzes = selectedCourse.getQuizzes();
+                if (quizzes.isEmpty()) {
+                    System.out.println("Tidak ada kuis untuk dihapus.");
+                    return;
+                }
+
+                for (int i = 0; i < quizzes.size(); i++) {
+                    System.out.println((i + 1) + ". Kuis ID: " + quizzes.get(i).getQuizId());
+                }
+
+                System.out.print("Pilih nomor kuis untuk dihapus: ");
+                try {
+                    int delIndex = Integer.parseInt(scanner.nextLine()) - 1;
+                    if (delIndex >= 0 && delIndex < quizzes.size()) {
+                        Quiz removed = quizzes.remove(delIndex);
+                        System.out.println("Kuis ID " + removed.getQuizId() + " berhasil dihapus.");
+                    } else {
+                        System.out.println("Pilihan tidak valid.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input harus berupa angka.");
+                }
+                break;
+
+            default:
+                System.out.println("Pilihan tidak valid.");
+                return;
+        }
+
+        CourseFileManager.simpanCourseKeFile(selectedCourse, "courses/" + selectedCourse.getName() + ".dat");
     }
-
-    CourseFileManager.simpanCourseKeFile(selectedCourse, "courses/" + selectedCourse.getName() + ".dat");
-}
-
 
     public Quiz getQuiz() {
         return quiz1;
