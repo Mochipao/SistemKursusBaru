@@ -69,6 +69,10 @@ public class Course implements Serializable {
         return category;
     }
 
+    public int getCourseId(){
+        return courseId;
+    }
+
     public List<Lesson> getLessons() {
         return lessons;
     }

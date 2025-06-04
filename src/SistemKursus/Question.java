@@ -28,7 +28,7 @@ public class Question implements Serializable{
     }
 
     public boolean isCorrect(int userAnswerIndex) {
-        return (userAnswerIndex - 1) == correctAnswerIndex;
+        return userAnswerIndex == correctAnswerIndex;
     }
 
     public void displayQuestion() {

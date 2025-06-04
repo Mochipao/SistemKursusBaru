@@ -49,6 +49,10 @@ public class Payment {
         }
     }
 
+    public int getPaymentID(){
+        return paymentId;
+    }
+
     public String getStatus() {
         return status;
     }
