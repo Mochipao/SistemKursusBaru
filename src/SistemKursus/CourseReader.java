@@ -4,7 +4,7 @@ import java.io.*;
 
 public class CourseReader {
     public static void main(String[] args) {
-        String folderPath = "courses"; // folder tempat menyimpan .dat
+        String folderPath = "courses"; 
 
         File folder = new File(folderPath);
         File[] files = folder.listFiles((dir, name) -> name.endsWith(".dat"));

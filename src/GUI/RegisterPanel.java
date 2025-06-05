@@ -7,41 +7,71 @@ import javax.swing.*;
 
 public class RegisterPanel extends JPanel {
     public RegisterPanel(MainGUI mainGUI) {
+        Color backgroundColor = new Color(0xFFF3E0);
+        Color buttonColor = new Color(0xFB8C00);
+        Color titleColor = new Color(0xE65100);
+        Color buttonTextColor = Color.WHITE;
+
         setLayout(new BorderLayout());
+        setBackground(backgroundColor);
 
         JLabel title = new JLabel("Register", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 24));
-        title.setBorder(BorderFactory.createEmptyBorder(30, 0, 10, 0));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        title.setForeground(titleColor);
+        title.setBorder(BorderFactory.createEmptyBorder(40, 0, 10, 0));
 
-        JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 200, 30, 200));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(backgroundColor);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 10, 15, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel nameLabel = new JLabel("Nama:");
-        JTextField nameField = new JTextField();
+        JTextField nameField = new JTextField(20);
+        nameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
         JLabel emailLabel = new JLabel("Email:");
-        JTextField emailField = new JTextField();
+        JTextField emailField = new JTextField(20);
+        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
         JLabel passwordLabel = new JLabel("Password:");
-        JPasswordField passwordField = new JPasswordField();
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
         JLabel roleLabel = new JLabel("Daftar sebagai:");
         String[] roles = {"Student", "Instructor"};
         JComboBox<String> roleCombo = new JComboBox<>(roles);
+        roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
-        formPanel.add(nameLabel);
-        formPanel.add(nameField);
-        formPanel.add(emailLabel);
-        formPanel.add(emailField);
-        formPanel.add(passwordLabel);
-        formPanel.add(passwordField);
-        formPanel.add(roleLabel);
-        formPanel.add(roleCombo);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(nameLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(nameField, gbc);
 
-        JButton registerButton = new JButton("Daftar");
-        JButton backButton = new JButton("Kembali");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(emailLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(emailField, gbc);
 
-        JPanel buttonPanel = new JPanel();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(passwordLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(passwordField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        formPanel.add(roleLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(roleCombo, gbc);
+
+        JButton registerButton = createStyledButton("Daftar", buttonColor, buttonTextColor);
+        JButton backButton = createStyledButton("Kembali", buttonColor, buttonTextColor);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        buttonPanel.setBackground(backgroundColor);
         buttonPanel.add(registerButton);
         buttonPanel.add(backButton);
 
@@ -77,7 +107,7 @@ public class RegisterPanel extends JPanel {
             UserFileManager.saveUser(newUser);
 
             JOptionPane.showMessageDialog(this, "Berhasil mendaftar sebagai " + role + "!");
-            mainGUI.showPanel("Login"); 
+            mainGUI.showPanel("Login");
         });
 
         backButton.addActionListener(e -> mainGUI.showPanel("Opening"));
@@ -85,5 +115,15 @@ public class RegisterPanel extends JPanel {
         add(title, BorderLayout.NORTH);
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private JButton createStyledButton(String text, Color bgColor, Color fgColor) {
+        JButton button = new JButton(text);
+        button.setBackground(bgColor);
+        button.setForeground(fgColor);
+        button.setFocusPainted(false);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setPreferredSize(new Dimension(120, 40));
+        return button;
     }
 }

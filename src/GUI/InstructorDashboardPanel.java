@@ -1,10 +1,6 @@
 package GUI;
 
-import SistemKursus.Course;
-import SistemKursus.CourseFileManager;
-import SistemKursus.Instructor;
-import SistemKursus.Lesson;
-import SistemKursus.Quiz;
+import SistemKursus.*;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
@@ -14,38 +10,50 @@ public class InstructorDashboardPanel extends JPanel {
     private MainGUI mainGUI;
     private JPanel courseListPanel;
 
+    private final Color backgroundColor = new Color(0xFFF3E0);
+    private final Color buttonColor = new Color(0xFB8C00);
+    private final Color titleColor = new Color(0xE65100);
+    private final Color buttonTextColor = Color.WHITE;
+
     public InstructorDashboardPanel(MainGUI mainGUI) {
         this.mainGUI = mainGUI;
         setLayout(new BorderLayout());
+        setBackground(backgroundColor); 
 
         JPanel topContainer = new JPanel(new BorderLayout());
+        topContainer.setBackground(backgroundColor);
 
-        // Panel logout di kanan
         JButton logoutButton = new JButton("Logout");
+        styleButton(logoutButton);
+
         logoutButton.addActionListener(e -> {
             mainGUI.setLoggedInInstructor(null);
             mainGUI.showPanel("Opening");
         });
+
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        topBar.setBackground(backgroundColor);
         topBar.add(logoutButton);
 
-        // Judul Panel
         JLabel title = new JLabel("👨‍🏫 Instructor Dashboard", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        title.setForeground(titleColor);
         topContainer.add(title, BorderLayout.CENTER);
         topContainer.add(topBar, BorderLayout.EAST);
         add(topContainer, BorderLayout.NORTH);
 
-        // Tombol "+ Add Course" di bagian bawah panel
         JButton addCourseButton = new JButton("+ Add Course");
+        styleButton(addCourseButton);
         addCourseButton.setFont(new Font("SansSerif", Font.PLAIN, 18));
         addCourseButton.addActionListener(e -> showAddCourseDialog());
         add(addCourseButton, BorderLayout.SOUTH);
 
-        // Panel daftar course dengan layout vertikal
         courseListPanel = new JPanel();
         courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
+        courseListPanel.setBackground(backgroundColor);
+
         JScrollPane scrollPane = new JScrollPane(courseListPanel);
+        scrollPane.getViewport().setBackground(backgroundColor);
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -58,35 +66,61 @@ public class InstructorDashboardPanel extends JPanel {
         List<Course> allCourses = CourseFileManager.loadAllCourses(folderPath);
 
         for (Course course : allCourses) {
-            if (course.getInstructorEmail().trim().equalsIgnoreCase(instructor.getEmail().trim())){
-                JPanel panel = new JPanel(new BorderLayout());
-                panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+            if (course.getInstructorEmail().trim().equalsIgnoreCase(instructor.getEmail().trim())) {
 
-                JLabel nameLabel = new JLabel("<html><b>" + course.getName() + "</b></html>");
+                JPanel cardPanel = new JPanel();
+                cardPanel.setLayout(new BorderLayout());
+                cardPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+                cardPanel.setBackground(Color.WHITE);
+                cardPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                    BorderFactory.createLineBorder(new Color(0xE0E0E0), 1)
+                ));
+
+                JLabel nameLabel = new JLabel(course.getName());
+                nameLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+                nameLabel.setForeground(titleColor);
+
                 JLabel detailLabel = new JLabel(
                     course.getLessons().size() + " Lessons • " +
                     course.getQuizzes().size() + " Quizzes • Rp " + course.getPrice()
                 );
-                JPanel leftPanel = new JPanel(new GridLayout(2, 1));
-                leftPanel.add(nameLabel);
-                leftPanel.add(detailLabel);
+                detailLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+                detailLabel.setForeground(Color.DARK_GRAY);
 
-                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                JPanel infoPanel = new JPanel();
+                infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+                infoPanel.setBackground(Color.WHITE);
+                infoPanel.add(nameLabel);
+                infoPanel.add(Box.createVerticalStrut(5));
+                infoPanel.add(detailLabel);
 
                 JButton detailButton = new JButton("Detail");
-                detailButton.addActionListener(e -> showCourseDialog(course.getName()));
-
                 JButton manageButton = new JButton("Manage");
+                styleButton(detailButton);
+                styleButton(manageButton);
+
+                detailButton.setPreferredSize(new Dimension(90, 28));
+                manageButton.setPreferredSize(new Dimension(90, 28));
+
+                detailButton.addActionListener(e -> showCourseDialog(course.getName()));
                 manageButton.addActionListener(e -> showManageCourseDialog(course.getName()));
 
-                buttonPanel.add(detailButton); // tambahkan dulu
-                buttonPanel.add(manageButton); // lalu tombol manage
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+                buttonPanel.setBackground(Color.WHITE);
+                buttonPanel.add(detailButton);
+                buttonPanel.add(manageButton);
 
-                panel.add(leftPanel, BorderLayout.CENTER);
-                panel.add(buttonPanel, BorderLayout.EAST);
+                cardPanel.add(infoPanel, BorderLayout.CENTER);
+                cardPanel.add(buttonPanel, BorderLayout.EAST);
 
-                courseListPanel.add(panel);
+                JPanel wrapper = new JPanel(new BorderLayout());
+                wrapper.setBackground(backgroundColor);
+                wrapper.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                wrapper.add(cardPanel, BorderLayout.CENTER);
+
+                courseListPanel.add(wrapper);
             }
         }
 
@@ -94,34 +128,82 @@ public class InstructorDashboardPanel extends JPanel {
         courseListPanel.repaint();
     }
 
+
+    private void styleButton(JButton button) {
+        button.setBackground(buttonColor);
+        button.setForeground(buttonTextColor);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+    }
+
     private void showAddCourseDialog() {
         JDialog dialog = new JDialog((Frame) null, "Add New Course", true);
-        dialog.setSize(400, 350);
+        dialog.setSize(450, 400);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setBackground(backgroundColor);
 
-        JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JLabel titleLabel = new JLabel("Create New Course");
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        titleLabel.setForeground(titleColor);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
 
-        JTextField nameField = new JTextField();
+        dialog.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        JLabel nameLabel = new JLabel("Course Name:");
+        nameLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JTextField nameField = new JTextField(20);
+
+        JLabel descLabel = new JLabel("Description:");
+        descLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         JTextArea descriptionArea = new JTextArea(3, 20);
-        JTextField priceField = new JTextField();
-        JTextField categoryField = new JTextField();
+        JScrollPane descScroll = new JScrollPane(descriptionArea);
 
-        formPanel.add(new JLabel("Course Name:"));
-        formPanel.add(nameField);
-        formPanel.add(new JLabel("Description:"));
-        formPanel.add(new JScrollPane(descriptionArea));
-        formPanel.add(new JLabel("Price:"));
-        formPanel.add(priceField);
-        formPanel.add(new JLabel("Category:"));
-        formPanel.add(categoryField);
-        formPanel.add(new JLabel("")); 
-        formPanel.add(new JLabel("")); 
+        JLabel priceLabel = new JLabel("Price (Rp):");
+        priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JTextField priceField = new JTextField(10);
+
+        JLabel categoryLabel = new JLabel("Category:");
+        categoryLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JTextField categoryField = new JTextField(15);
+
+        formPanel.add(nameLabel, gbc); gbc.gridx = 1;
+        formPanel.add(nameField, gbc); gbc.gridx = 0; gbc.gridy++;
+
+        formPanel.add(descLabel, gbc); gbc.gridx = 1;
+        formPanel.add(descScroll, gbc); gbc.gridx = 0; gbc.gridy++;
+
+        formPanel.add(priceLabel, gbc); gbc.gridx = 1;
+        formPanel.add(priceField, gbc); gbc.gridx = 0; gbc.gridy++;
+
+        formPanel.add(categoryLabel, gbc); gbc.gridx = 1;
+        formPanel.add(categoryField, gbc); gbc.gridx = 0; gbc.gridy++;
 
         dialog.add(formPanel, BorderLayout.CENTER);
 
-        JButton submitButton = new JButton("Submit");
+        JButton submitButton = new JButton("Create Course");
+        styleButton(submitButton);
+        submitButton.setPreferredSize(new Dimension(150, 35));
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(backgroundColor);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+        buttonPanel.add(submitButton);
+
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
         submitButton.addActionListener(e -> {
             try {
                 String name = nameField.getText().trim();
@@ -161,7 +243,7 @@ public class InstructorDashboardPanel extends JPanel {
                         "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 dialog.dispose();
-                populateCourses(); // Refresh list
+                populateCourses();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(dialog, "Invalid price!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
@@ -169,9 +251,11 @@ public class InstructorDashboardPanel extends JPanel {
                 JOptionPane.showMessageDialog(dialog, "Error adding course!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        dialog.add(submitButton, BorderLayout.SOUTH);
+
         dialog.setVisible(true);
     }
+
+
 
     private Course findCourseByName(String courseName) {
         List<Course> allCourses = CourseFileManager.loadAllCourses("courses");
@@ -183,22 +267,27 @@ public class InstructorDashboardPanel extends JPanel {
         return null;
     }
 
-    // Method untuk mengelola course (contoh: tambah lesson atau quiz)
-    // Method untuk mengelola course (contoh: tambah lesson/quiz)
     private void showManageCourseDialog(String courseName) {
         JDialog dialog = new JDialog((Frame) null, "Manage Course: " + courseName, true);
         dialog.setSize(400, 250);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setBackground(backgroundColor);
 
-        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10)); // 2 baris, 2 kolom
+        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));
+        panel.setBackground(backgroundColor);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JButton addLessonButton = new JButton("+ Add Lesson");
         JButton addQuizButton = new JButton("+ Add Quiz");
         JButton deleteLessonButton = new JButton("- Delete Lesson");
         JButton deleteQuizButton = new JButton("- Delete Quiz");
 
-        // Tambah pelajaran
+        styleButton(addLessonButton);
+        styleButton(addQuizButton);
+        styleButton(deleteLessonButton);
+        styleButton(deleteQuizButton);
+
         addLessonButton.addActionListener(e -> {
             Course selectedCourse = findCourseByName(courseName);
             if (selectedCourse != null) {
@@ -209,7 +298,6 @@ public class InstructorDashboardPanel extends JPanel {
             }
         });
 
-        // Tambah kuis
         addQuizButton.addActionListener(e -> {
             Course selectedCourse = findCourseByName(courseName);
             if (selectedCourse != null) {
@@ -220,7 +308,6 @@ public class InstructorDashboardPanel extends JPanel {
             }
         });
 
-        // Hapus pelajaran
         deleteLessonButton.addActionListener(e -> {
             Course selectedCourse = findCourseByName(courseName);
             if (selectedCourse != null) {
@@ -242,7 +329,6 @@ public class InstructorDashboardPanel extends JPanel {
             }
         });
 
-        // Hapus kuis
         deleteQuizButton.addActionListener(e -> {
             Course selectedCourse = findCourseByName(courseName);
             if (selectedCourse != null) {
@@ -279,6 +365,7 @@ public class InstructorDashboardPanel extends JPanel {
         dialog.setVisible(true);
     }
 
+
     private void showCourseDialog(String courseName) {
         Course selectedCourse = findCourseByName(courseName);
         if (selectedCourse == null) {
@@ -290,9 +377,12 @@ public class InstructorDashboardPanel extends JPanel {
         dialog.setSize(400, 400);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setBackground(backgroundColor);
 
         JTextArea contentArea = new JTextArea();
         contentArea.setEditable(false);
+        contentArea.setBackground(Color.WHITE);
+        contentArea.setFont(new Font("SansSerif", Font.PLAIN, 13));
 
         StringBuilder sb = new StringBuilder();
         sb.append("Kategori: ").append(selectedCourse.getCategory()).append("\n\n");
@@ -320,16 +410,18 @@ public class InstructorDashboardPanel extends JPanel {
 
         contentArea.setText(sb.toString());
         JScrollPane scrollPane = new JScrollPane(contentArea);
+        scrollPane.getViewport().setBackground(backgroundColor);
 
         JButton closeButton = new JButton("Tutup");
+        styleButton(closeButton);
         closeButton.addActionListener(e -> dialog.dispose());
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.setBackground(backgroundColor);
         bottomPanel.add(closeButton);
 
         dialog.add(scrollPane, BorderLayout.CENTER);
         dialog.add(bottomPanel, BorderLayout.SOUTH);
         dialog.setVisible(true);
     }
-
 }

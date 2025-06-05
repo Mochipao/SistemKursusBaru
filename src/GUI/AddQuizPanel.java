@@ -94,6 +94,7 @@ public class AddQuizPanel extends JPanel {
                 mainGUI.showInstructorDashboard(); 
             } else {
                 JOptionPane.showMessageDialog(this, "Tidak ada soal untuk disimpan.");
+                mainGUI.showInstructorDashboard();
             }
         });
 
