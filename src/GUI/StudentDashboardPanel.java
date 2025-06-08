@@ -3,6 +3,7 @@ package GUI;
 import SistemKursus.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -78,11 +79,13 @@ public class StudentDashboardPanel extends JPanel {
             return;
         }
 
+        Student student = mainGUI.getCurrentStudent();
+
         for (Course course : courseList) {
             JPanel card = new JPanel(new BorderLayout(10, 10));
             card.setBackground(Color.WHITE);
             card.setBorder(new CompoundBorder(new EmptyBorder(10, 15, 10, 15),
-                                               new LineBorder(CARD_BORDER_COLOR, 2, true)));
+                                            new LineBorder(CARD_BORDER_COLOR, 2, true)));
             card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
 
             JLabel nameLabel = new JLabel(course.getName());
@@ -90,7 +93,7 @@ public class StudentDashboardPanel extends JPanel {
             nameLabel.setForeground(TITLE_COLOR);
 
             JLabel detailLabel = new JLabel(course.getLessons().size() + " Lessons • " +
-                                             course.getQuizzes().size() + " Quizzes");
+                                            course.getQuizzes().size() + " Quizzes");
             detailLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
 
             JPanel leftPanel = new JPanel();
@@ -102,15 +105,24 @@ public class StudentDashboardPanel extends JPanel {
             JLabel priceLabel = new JLabel("Rp " + (int) course.getPrice());
             priceLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-            JButton enrollButton = createButton("Enroll");
-            enrollButton.addActionListener(e -> showPaymentPanel(course));
+            JButton actionButton;
+            if (student != null && hasPaidForCourse(student, course)) {
+                actionButton = createButton("Belajar");
+                actionButton.addActionListener(e -> {
+                    JOptionPane.showMessageDialog(this, "Menu belajar untuk kursus: " + course.getName());
+                    mainGUI.showLessonPanel(course);
+                });
+            } else {
+                actionButton = createButton("Enroll");
+                actionButton.addActionListener(e -> showPaymentPanel(course));
+            }
 
             card.add(leftPanel, BorderLayout.CENTER);
             card.add(priceLabel, BorderLayout.EAST);
-            card.add(enrollButton, BorderLayout.SOUTH);
+            card.add(actionButton, BorderLayout.SOUTH);
 
             courseListPanel.add(card);
-            courseListPanel.add(Box.createVerticalStrut(15)); 
+            courseListPanel.add(Box.createVerticalStrut(15));
         }
 
         revalidate();
@@ -124,5 +136,23 @@ public class StudentDashboardPanel extends JPanel {
             return;
         }
         mainGUI.showPaymentPanel(course);
+    }
+
+    private boolean hasPaidForCourse(Student student, Course course) {
+        String fileName = "pembayaran_" + student.getName() + ".txt"; 
+        java.io.File file = new java.io.File(fileName);
+        if (!file.exists()) return false;
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.contains(course.getName())) { 
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

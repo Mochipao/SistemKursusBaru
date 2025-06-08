@@ -8,7 +8,7 @@ public class Student extends User {
 
     @Override
     public String getName() {
-        return "Siswa: " + super.getName();
+        return super.getName();
     }
 
     @Override

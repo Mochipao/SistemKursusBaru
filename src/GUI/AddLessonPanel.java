@@ -15,21 +15,44 @@ public class AddLessonPanel extends JPanel {
     private JList<String> contentList;
     private JButton addContentButton, saveLessonButton;
 
+    private final Color backgroundColor = new Color(0xFFF3E0);
+    private final Color buttonColor = new Color(0xFB8C00);
+    private final Color titleColor = new Color(0xE65100);
+    private final Color buttonTextColor = Color.WHITE;
+
     public AddLessonPanel(MainGUI mainGUI, Course selectedCourse) {
         this.mainGUI = mainGUI;
         this.selectedCourse = selectedCourse;
         setLayout(new BorderLayout());
+        setBackground(backgroundColor);
 
-        JPanel topPanel = new JPanel(new GridLayout(2, 2));
+        JLabel titleLabel = new JLabel("Tambah Pelajaran - " + selectedCourse.getName(), SwingConstants.CENTER);
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        titleLabel.setForeground(titleColor);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        add(titleLabel, BorderLayout.NORTH);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(backgroundColor);
+        JLabel judulLabel = new JLabel("Judul Pelajaran:");
+        judulLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        topPanel.add(judulLabel, BorderLayout.NORTH);
+
         titleField = new JTextField();
+        titleField.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        topPanel.add(titleField, BorderLayout.CENTER);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        topPanel.add(new JLabel("Judul Pelajaran:"));
-        topPanel.add(titleField);
+        add(topPanel, BorderLayout.BEFORE_FIRST_LINE);
 
         contentArea = new JTextArea(4, 20);
-        contentListModel = new DefaultListModel<>();
-        contentList = new JList<>(contentListModel);
+        contentArea.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JScrollPane contentScroll = new JScrollPane(contentArea);
+
         addContentButton = new JButton("Tambah Konten");
+        addContentButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+        addContentButton.setBackground(buttonColor);
+        addContentButton.setForeground(buttonTextColor);
         addContentButton.addActionListener(e -> {
             String konten = contentArea.getText().trim();
             if (!konten.isEmpty()) {
@@ -38,21 +61,45 @@ public class AddLessonPanel extends JPanel {
             }
         });
 
-        JPanel contentInputPanel = new JPanel(new BorderLayout());
-        contentInputPanel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
+        JPanel contentInputPanel = new JPanel(new BorderLayout(10, 10));
+        contentInputPanel.setBackground(backgroundColor);
+        contentInputPanel.add(contentScroll, BorderLayout.CENTER);
         contentInputPanel.add(addContentButton, BorderLayout.EAST);
+        contentInputPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        contentListModel = new DefaultListModel<>();
+        contentList = new JList<>(contentListModel);
+        contentList.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JScrollPane listScrollPane = new JScrollPane(contentList);
+
+        JPanel contentListPanel = new JPanel(new BorderLayout());
+        contentListPanel.setBackground(backgroundColor);
+        JLabel daftarKontenLabel = new JLabel("Daftar Konten:");
+        daftarKontenLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        contentListPanel.add(daftarKontenLabel, BorderLayout.NORTH);
+        contentListPanel.add(listScrollPane, BorderLayout.CENTER);
+        contentListPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setBackground(backgroundColor);
         centerPanel.add(contentInputPanel, BorderLayout.NORTH);
-        centerPanel.add(new JLabel("Daftar Konten:"), BorderLayout.CENTER);
-        centerPanel.add(new JScrollPane(contentList), BorderLayout.SOUTH);
+        centerPanel.add(contentListPanel, BorderLayout.CENTER);
+
+        add(centerPanel, BorderLayout.CENTER);
 
         saveLessonButton = new JButton("Simpan Pelajaran");
+        saveLessonButton.setFont(new Font("SansSerif", Font.BOLD, 16));
+        saveLessonButton.setBackground(buttonColor);
+        saveLessonButton.setForeground(buttonTextColor);
+        saveLessonButton.setPreferredSize(new Dimension(200, 40));
         saveLessonButton.addActionListener(e -> simpanLesson());
 
-        add(topPanel, BorderLayout.NORTH);
-        add(centerPanel, BorderLayout.CENTER);
-        add(saveLessonButton, BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(backgroundColor);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        bottomPanel.add(saveLessonButton);
+
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void simpanLesson() {
@@ -78,5 +125,3 @@ public class AddLessonPanel extends JPanel {
         contentListModel.clear();
     }
 }
-
-

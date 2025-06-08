@@ -26,7 +26,9 @@ public class Payment {
         if (!status.equalsIgnoreCase("Paid")) {
             status = "Paid";
             System.out.println("Pembayaran sebesar Rp" + amount + " telah diproses");
-
+            System.out.println("Nama siswa: " + studentName);
+            System.out.println("Nama file akan: pembayaran_" + studentName + ".txt");
+            System.out.println("Folder saat ini: " + System.getProperty("user.dir"));
             savePaymentToFile();
         } else {
             System.out.println("Pembayaran sudah dilakukan sebelumnya");
@@ -34,7 +36,8 @@ public class Payment {
     }
 
     private void savePaymentToFile() {
-        try (FileWriter writer = new FileWriter("pembayaran_" + instructorName + ".txt", true)) {
+        String safeStudentName = studentName.replaceAll("\\s+", "_");
+        try (FileWriter writer = new FileWriter("pembayaran_" + safeStudentName + ".txt", true)) {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             writer.write("=== Data Pembayaran ===\n");
             writer.write("Waktu       : " + timestamp + "\n");

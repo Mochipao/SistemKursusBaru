@@ -1,0 +1,8 @@
+=== Data Pembayaran ===
+Waktu       : 2025-06-05 11:37:35
+ID Pembayaran: 4000
+Siswa       : Ramadian
+Kursus      : Java Beginner
+Jumlah      : Rp25000.0
+Status      : Paid
+---------------

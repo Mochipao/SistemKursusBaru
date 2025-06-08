@@ -74,17 +74,27 @@ public class PaymentPanel extends JPanel {
         styleButton(backButton);
 
         confirmPaymentButton.addActionListener(e -> {
-            String message = "Apakah Anda sudah melakukan pembayaran untuk kursus " + course.getName() + "?";
-            int confirm = JOptionPane.showConfirmDialog(this, message, "Konfirmasi Pembayaran", JOptionPane.YES_NO_OPTION);
+        String message = "Apakah Anda sudah melakukan pembayaran untuk kursus " + course.getName() + "?";
+        int confirm = JOptionPane.showConfirmDialog(this, message, "Konfirmasi Pembayaran", JOptionPane.YES_NO_OPTION);
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                payment.processPayment();
-                JOptionPane.showMessageDialog(this, "Pembayaran berhasil dilakukan!\nAnda akan diarahkan ke kursus.");
-                mainGUI.showLessonPanel(course);
-            } else {
-                JOptionPane.showMessageDialog(this, "Silakan lakukan pembayaran terlebih dahulu.");
-            }
-        });
+        if (confirm == JOptionPane.YES_OPTION) {
+            Payment payment = new Payment(
+                3000 + course.getCourseId(),
+                course.getPrice(),
+                "Unpaid",
+                student.getName(),
+                course.getInstructorName(),
+                course.getName()
+            );
+
+            payment.processPayment();
+
+            JOptionPane.showMessageDialog(this, "Pembayaran berhasil dilakukan!\nAnda akan diarahkan ke kursus.");
+            mainGUI.showLessonPanel(course);
+        } else {
+            JOptionPane.showMessageDialog(this, "Silakan lakukan pembayaran terlebih dahulu.");
+        }
+    });
 
         backButton.addActionListener(e -> mainGUI.showStudentDashboard());
 

@@ -1,0 +1,16 @@
+=== Data Pembayaran ===
+Waktu       : 2025-06-05 11:27:32
+ID Pembayaran: 4000
+Siswa       : Daffi
+Kursus      : Java Beginner
+Jumlah      : Rp25000.0
+Status      : Paid
+---------------
+=== Data Pembayaran ===
+Waktu       : 2025-06-05 19:13:15
+ID Pembayaran: 4000
+Siswa       : Daffi
+Kursus      : Java Beginner
+Jumlah      : Rp25000.0
+Status      : Paid
+---------------
